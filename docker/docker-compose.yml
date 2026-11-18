@@ -1,0 +1,42 @@
+services:
+  ogg-oracle:
+    image: container-registry.oracle.com/goldengate/goldengate-oracle-free:latest
+    container_name: ogg-oracle
+    hostname: ogg-oracle
+    environment:
+      - OGG_ADMIN_USER=oggadmin
+      - OGG_ADMIN_PWD=PASSWORD
+      - ACCEPT_LICENSE=true
+    ports:
+      - "192.168.1.153:8443:443"
+      - "192.168.1.153:9011-9015:9011-9015"
+    volumes:
+      - ogg_oracle_data:/u02
+    extra_hosts:
+      - "oracle-node5:192.168.1.156"
+    restart: unless-stopped
+
+  ogg-postgres:
+    image: container-registry.oracle.com/goldengate/goldengate-postgresql-free:latest
+    container_name: ogg-postgres
+    hostname: ogg-postgres
+    environment:
+      - OGG_ADMIN_USER=oggadmin
+      - OGG_ADMIN_PWD=PASSWORD
+      - ACCEPT_LICENSE=true
+    ports:
+      - "192.168.1.151:8443:443"
+      - "192.168.1.151:9011-9015:9011-9015"
+    volumes:
+      - ogg_postgres_data:/u02
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  ogg_oracle_data:
+    external: true
+    name: goldengate-lab_ogg_oracle_data
+  ogg_postgres_data:
+    external: true
+    name: goldengate-lab_ogg_postgres_data
