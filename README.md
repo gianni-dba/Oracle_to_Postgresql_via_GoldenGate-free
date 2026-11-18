@@ -60,7 +60,7 @@ Mettere insieme due motori diversi e due container GoldenGate sulla stessa macch
    Montare un volume Docker vuoto direttamente su `/etc/nginx/cert` causava un crash all'avvio (`Permission denied` durante `genrsa`), poiché l'utente interno `oracle` (UID `54321`) non aveva permessi di scrittura sulla directory creata da `root`.
    * **Soluzione:** Rimosso il mount su `/etc/nginx/cert` lasciando persistente solo `/u02` (gestito correttamente dall'entrypoint dell'immagine).
 3. **Bug UI su Trandata e uso di `adminclient`:**
-   Nella Web UI di GoldenGate 23ai/26ai, la ricerca con wildcard (`LUIGI.*`) nella sezione Trandata restituiva un errore di validazione JSON (`OGG-12111`).
+   Nella Web UI di GoldenGate 23ai/26ai, la ricerca delle tabelle di luigi, cercate anche solo come tabelle, con o senza wildcards, nella sezione Trandata restituiva un errore di validazione JSON (`OGG-12111`).
    * **Soluzione:** Attivato il supplemental logging direttamente tramite CLI ufficiale (`adminclient` con `ADD SCHEMATRANDATA LUIGI`), verificando subito dopo la comparsa delle tabelle nella console web.
 4. **Espansione disco senza LVM (`parted` + `resize2fs`):**
    Per avere più spazio da dedicare a questo progetto sulla VM Debian senza LVM, già occupata da Postgresql in PITR, è stato aumentato lo spazio disco, ma la partizione di swap in coda al disco impediva a `growpart` di espandere `/dev/sda1`. Disattivata temporaneamente la swap, ridimensionata la partizione principale con `parted`, espanso il filesystem `ext4` a caldo con `resize2fs` e ricreata la swap aggiornando `/etc/fstab`.
